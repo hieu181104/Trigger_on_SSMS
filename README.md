@@ -40,3 +40,11 @@ Bảng DiemDanh:
 ![Ảnh chụp màn hình 2025-04-23 192658](https://github.com/user-attachments/assets/288bded8-7570-48fe-836c-2393c7a779ed)
 Bảng KetQuaHocTap:
 ![Ảnh chụp màn hình 2025-04-23 193633](https://github.com/user-attachments/assets/85503588-e16a-403a-8e42-97fe27833a57)
+Bảng ThongBao:
+![Ảnh chụp màn hình 2025-04-23 194554](https://github.com/user-attachments/assets/8d09296b-5b80-4881-b572-691bb48fc43f)
+Bảng PhanHoi:
+![Ảnh chụp màn hình 2025-04-23 195020](https://github.com/user-attachments/assets/4a73867d-7ef1-4e2e-829c-06ae2d69f570)
+## B. Bài tập 5
+### Trong bảng KetQuaHocTap em đã bổ sung một trường phi chuẩn là diemtb (nội dung trường này là điểm trung bình, và có thể được tính từ các trường dữ liệu điểm số khác). Việc thêm sẵn trường diemtb để tiết kiệm thời gian khi truy xuất dữ liệu.
+![Ảnh chụp màn hình 2025-04-23 200255](https://github.com/user-attachments/assets/c7216a64-fa41-4627-a885-df8770056466)
+### Tạo trigger cho bảng KetQuaHocTap với nội dung là tự động tính điểm trung bình (diemtb) mỗi khi insert hoặc update điểm, và một trigger tạo cảnh báo khi điểm quá thấp (diemtb < 4). Từ đó mỗi khi thay đổi điểm cho học sinh, hệ thống sẽ tự động tính điểm tb đồng thời có thể cảnh báo nếu điểm tb của học sinh đó quá thấp:
