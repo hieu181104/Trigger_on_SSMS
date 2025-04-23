@@ -39,3 +39,4 @@ Bảng ChuNhiem gồm PK là id, FK là trường id_giaovien và id_hocsinh:
 Bảng DiemDanh:
 ![Ảnh chụp màn hình 2025-04-23 192658](https://github.com/user-attachments/assets/288bded8-7570-48fe-836c-2393c7a779ed)
 Bảng KetQuaHocTap:
+![Ảnh chụp màn hình 2025-04-23 193633](https://github.com/user-attachments/assets/85503588-e16a-403a-8e42-97fe27833a57)
