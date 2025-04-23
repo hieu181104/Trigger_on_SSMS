@@ -47,4 +47,55 @@ Bảng PhanHoi:
 ## B. Bài tập 5
 ### Trong bảng KetQuaHocTap em đã bổ sung một trường phi chuẩn là diemtb (nội dung trường này là điểm trung bình, và có thể được tính từ các trường dữ liệu điểm số khác). Việc thêm sẵn trường diemtb để tiết kiệm thời gian khi truy xuất dữ liệu.
 ![Ảnh chụp màn hình 2025-04-23 200255](https://github.com/user-attachments/assets/c7216a64-fa41-4627-a885-df8770056466)
+### Nhập dữ liệu demo cho một số bảng có liên quan đến việc chạy trigger:
+![image](https://github.com/user-attachments/assets/11b8841f-a390-490a-b811-fb4133fb5395)
+![image](https://github.com/user-attachments/assets/bcd4ccde-b043-4a3f-8bf6-10bcb503d492)
+![image](https://github.com/user-attachments/assets/4b9fc9c7-893b-4f0b-b38e-69ca52e2eb30)
+![image](https://github.com/user-attachments/assets/c7500ce2-a88d-444b-ac84-47cb51bbcdc0)
 ### Tạo trigger cho bảng KetQuaHocTap với nội dung là tự động tính điểm trung bình (diemtb) mỗi khi insert hoặc update điểm, và một trigger tạo cảnh báo khi điểm quá thấp (diemtb < 4). Từ đó mỗi khi thay đổi điểm cho học sinh, hệ thống sẽ tự động tính điểm tb đồng thời có thể cảnh báo nếu điểm tb của học sinh đó quá thấp:
+```sql
+CREATE TRIGGER trg_TinhDiemTB
+ON KetQuaHocTap
+AFTER INSERT, UPDATE
+AS
+BEGIN
+    UPDATE KetQuaHocTap
+    SET diemtb = ROUND(
+        (ISNULL(i.diemhso1, 0) + ISNULL(i.diemhso2, 0) * 2 + ISNULL(i.diemhso3, 0) * 3) / 6.0,
+        2
+    )
+    FROM KetQuaHocTap k
+    INNER JOIN inserted i ON k.idketqua = i.idketqua;
+END;
+```
+#### Kết quả sau khi tạo trigger tính điểm tb:
+![image](https://github.com/user-attachments/assets/2bc880fa-222a-432c-9466-e3f64e0e8e45)
+```sql
+CREATE TRIGGER trg_CanhBaoDiemThap
+ON KetQuaHocTap
+AFTER INSERT, UPDATE
+AS
+BEGIN
+    DECLARE @id VARCHAR(12), @tb FLOAT;
+    -- Duyệt từng bản ghi trong bảng inserted (hỗ trợ nhiều dòng nếu cần)
+    DECLARE cur CURSOR FOR
+        SELECT idketqua,
+               (ISNULL(diemhso1, 0) + ISNULL(diemhso2, 0) * 2 + ISNULL(diemhso3, 0) * 3) / 6.0 AS diemtb
+        FROM inserted;
+    OPEN cur;
+    FETCH NEXT FROM cur INTO @id, @tb;
+    WHILE @@FETCH_STATUS = 0
+    BEGIN
+        IF (@tb < 4)
+        BEGIN
+            PRINT N'Cảnh báo: Học sinh với ID ' + @id + N' có điểm trung bình dưới 4 (Điểm TB: ' + CAST(@tb AS NVARCHAR(10)) + ')';
+        END
+        FETCH NEXT FROM cur INTO @id, @tb;
+    END
+    CLOSE cur;
+    DEALLOCATE cur;
+END;
+```
+#### Kết quả sau khi tạo trigger cảnh báo điểm tb thấp:
+![image](https://github.com/user-attachments/assets/857ae3c0-9ae0-482b-99c7-8dea1129514c)
+#### Như vậy, sau khi sử dụng trigger, nó giúp tăng hiệu quả khi làm việc với sql, tự động tính toán các trường phi chuẩn và cũng cung cấp khả năng cảnh báo dữ liệu. Nhờ trigger, người dùng có thể nhập dữ liệu một cách chính xác hơn và đảm bảo tính toàn vẹn và thống nhất.
